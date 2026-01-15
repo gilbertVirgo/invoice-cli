@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Helvetica, Arial, sans-serif;
+        padding: <%= STYLE.SPACING.xl %>px;
+        line-height: 1.35;
+
+        display: flex;
+        flex-direction: column;
+        row-gap: <%= STYLE.SPACING.xxl %>px;
+      }
+      h1 {
+        font-size: <%= STYLE.FONT.header %>px;
+        font-weight: bold;
+      }
+      h2 {
+        font-size: <%= STYLE.FONT.title %>px;
+        font-weight: bold;
+      }
+      h3 {
+        font-size: <%= STYLE.FONT.section %>px;
+        font-weight: bold;
+      }
+      p {
+        font-size: <%= STYLE.FONT.body %>px;
+      }
+      table {
+        width: 100%;
+
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      th {
+        font-size: <%= STYLE.FONT.body %>px;
+        font-weight: bold;
+        text-align: left;
+        padding: <%= STYLE.SPACING.sm %>px 0;
+        border-bottom: 1px solid #000;
+      }
+      td {
+        font-size: <%= STYLE.FONT.body %>px;
+        padding: <%= STYLE.SPACING.sm %>px 0;
+        border-bottom: none;
+      }
+      .footer {
+        text-align: center;
+        font-size: <%= STYLE.FONT.small %>px;
+        padding-top: <%= STYLE.SPACING.sm %>px;
+        border-top: 1px solid #d8d8d8;
+      }
+
+      .from-to__wrapper {
+        display: flex;
+        gap: <%= STYLE.SPACING.md %>px;
+      }
+
+      .from-to__wrapper > div {
+        flex: 1;
+      }
+
+      .col {
+        display: flex;
+        flex-direction: column;
+        row-gap: <%= STYLE.SPACING.sm %>px;
+      }
+
+      .row {
+        display: flex;
+        column-gap: <%= STYLE.SPACING.sm %>px;
+      }
+
+      .align-right {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="col">
+      <h1>Invoice</h1>
+
+      <p>
+        Invoice number: <%= invoiceData.invoiceNumber %><br />
+        Date due: <%= formatDate(invoiceData.dateDue) %>
+      </p>
+    </div>
+
+    <div class="from-to__wrapper">
+      <div class="col">
+        <h3>From</h3>
+        <p>
+          <%= COMPANY.name %><br />
+          <%= COMPANY.address %><br />
+          <%= COMPANY.city %><br />
+          <%= COMPANY.postcode %><br />
+          <%= COMPANY.country %><br />
+          <%= COMPANY.phone %>
+        </p>
+      </div>
+      <div class="col">
+        <h3>Bill to</h3>
+        <p>
+          <%= invoiceData.recipientName %><br />
+          <%= invoiceData.recipientEmail %>
+        </p>
+      </div>
+    </div>
+
+    <h2>
+      <%= formatCurrency(total) %> due <%= formatDate(invoiceData.dateDue) %>
+    </h2>
+
+    <div class="col">
+      <table>
+        <colgroup>
+          <col style="width: 55%" />
+          <col style="width: 12%" />
+          <col style="width: 16%" />
+          <col style="width: 17%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit price</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% invoiceData.items.forEach(function(item) { %>
+          <tr>
+            <td><%= item.description %></td>
+            <td><%= item.quantity %></td>
+            <td><%= formatCurrency(item.unitPrice) %></td>
+            <td><%= formatCurrency(item.quantity * item.unitPrice) %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <div class="col" style="align-self: flex-end; width: 45%">
+        <p>
+          <strong>Total</strong>
+          <%= formatCurrency(total) %>
+        </p>
+      </div>
+    </div>
+
+    <div class="col">
+      <h3>Bank Transfer Details</h3>
+      <p>
+        Name: <%= COMPANY.bank.name %><br />
+        Sort Code: <%= COMPANY.bank.sortCode %><br />
+        Account Number: <%= COMPANY.bank.accountNumber %><br />
+        IBAN: <%= COMPANY.bank.iban %>
+      </p>
+    </div>
+
+    <div class="footer">
+      <%= invoiceData.invoiceNumber %> · <%= formatCurrency(total) %> due <%=
+      formatDate(invoiceData.dateDue) %>
+    </div>
+  </body>
+</html>
