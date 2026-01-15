@@ -149,6 +149,7 @@ Environment vars recognised:
 - `GOOGLE_SHEET_ID` — spreadsheet ID (provide via `.env`)
 - `COMPANY_NAME`, `COMPANY_ADDRESS`, `COMPANY_CITY`, `COMPANY_POSTCODE`, `COMPANY_COUNTRY`, `COMPANY_PHONE` — company contact information (provide via `.env`)
 - `COMPANY_BANK_NAME`, `COMPANY_BANK_SORTCODE`, `COMPANY_BANK_ACCOUNT_NUMBER`, `COMPANY_BANK_IBAN` — company bank details (provide via `.env`)
+- `INVOICE_ENV_PATH` — optional path to a specific `.env` file (absolute or relative). If set, the CLI will try to load the env from this path first. When running `invoice` globally, the CLI will also look for `.env` in the current working directory and in the package installation directory to make global usage convenient.
 
 Date format used when writing **Date created**: ISO 8601 (UTC), e.g. `2026-01-15T12:34:56.789Z`.
 
