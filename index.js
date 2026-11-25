@@ -106,7 +106,7 @@ async function main() {
     const filepath = await generatePDF(invoiceData);
 
     console.log(
-      `\n✅ Invoice generated successfully: ${path.basename(filepath)}\n`
+      `\n✅ Invoice generated successfully: ${filepath}\n`,
     );
 
     // Open the PDF
@@ -117,31 +117,34 @@ async function main() {
     }
 
     // Try to append invoice details to Google Sheet and print the sheet link
+    const ora = require("ora");
+    const spinner = ora("Saving to Google Sheets...").start();
     try {
       const appendInvoiceToSheet = require("./lib/sheets");
       const sheetResult = await appendInvoiceToSheet(invoiceData);
       if (sheetResult) {
+        spinner.succeed("Saved to Google Sheets");
         const updatedRange = sheetResult.updatedRange
           ? ` (range ${sheetResult.updatedRange})`
           : "";
-        console.log(
-          `\n📎 Appended to spreadsheet: ${sheetResult.url}${updatedRange}\n`
-        );
+        console.log(`📎 Spreadsheet: ${sheetResult.url}${updatedRange}\n`);
       } else {
         // No sheet result - likely missing credentials or missing sheet id in env
+        spinner.info("Spreadsheet not updated");
         const { SHEET_ID } = require("./lib/config");
         if (SHEET_ID) {
           console.log(
-            `\n📎 Spreadsheet (not updated - missing credentials): https://docs.google.com/spreadsheets/d/${SHEET_ID}\n`
+            `📎 Spreadsheet (not updated - missing credentials): https://docs.google.com/spreadsheets/d/${SHEET_ID}\n`,
           );
         } else {
           console.log(
-            `\n📎 Spreadsheet not updated: no GOOGLE_SHEET_ID configured. Add it to your .env or set env var and retry.\n`
+            `📎 Spreadsheet not updated: no GOOGLE_SHEET_ID configured. Add it to your .env or set env var and retry.\n`,
           );
         }
       }
     } catch (err) {
-      console.warn("Could not append to spreadsheet:", err.message);
+      spinner.fail("Could not append to spreadsheet");
+      console.warn(err.message);
     }
   } catch (error) {
     if (error.isTtyError) {
