@@ -128,8 +128,13 @@
         <thead>
           <tr>
             <th>Description</th>
+            <% if (billingType === 'hours') { %>
+            <th>Hours</th>
+            <th>Hourly rate</th>
+            <% } else { %>
             <th>Qty</th>
             <th>Unit price</th>
+            <% } %>
             <th>Amount</th>
           </tr>
         </thead>
